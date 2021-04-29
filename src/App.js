@@ -7,7 +7,7 @@ import HomePage from './pages/homepage/Homepage.component';
 import ShopPage from './pages/shop/Shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/Sign-in-and-sign-up.component';
 import Header from './components/header/Header.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 class App extends React.Component {
   constructor() {
@@ -21,10 +21,23 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user });
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if(userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+      
+        userRef.onSnapshot(sanpShot =>{
+          this.setState({
+            currentUser: {
+              id: sanpShot.id,
+              ...sanpShot.data()
+            }
+          });
+          console.log(this.state);
+        });
+        // console.log(this.state); - в этом месте так нельзя писать из-за this.setState - синхронное значение, нужно делать второй параметр (через аноним функцию)
+      }
 
-      console.log(user);
+      this.setState({currentUser: userAuth});
     });
   }
 

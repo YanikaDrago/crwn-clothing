@@ -13,6 +13,33 @@ const config = {
   } // на сйте создали проект, при настройке взяли config
   //установили пакет, здесь настраиваем utilis
 
+  export const createUserProfileDocument = async (userAuth, additionalData) => { //async - потомоу что запрос к API
+    if (!userAuth) return; //если user не null - мы выходим (нам не надо его сохранять)
+
+    const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+    const snapShot = await userRef.get();
+
+    if(!snapShot.exists){ //если 'снимка' данных о пользователе не существует, мы его создадим
+      const {displayName, email} = userAuth;
+      const createdAt = new Date();
+
+      try {                    // обработчик ошибок
+        await userRef.set({    // подождет userRef, потом создаст данные
+          displayName,
+          email,
+          createdAt,
+          ...additionalData
+        })
+      } catch (error) {
+        console.log('error creating user', error.message);
+      }
+    }
+
+    return userRef;
+  }
+  // настраиваем сохранение в базу данных firestore
+
   firebase.initializeApp(config);
 
   export const auth = firebase.auth();
