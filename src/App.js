@@ -32,7 +32,6 @@ class App extends React.Component {
               ...sanpShot.data()
             }
           });
-          console.log(this.state);
         });
         // console.log(this.state); - в этом месте так нельзя писать из-за this.setState - синхронное значение, нужно делать второй параметр (через аноним функцию)
       }
