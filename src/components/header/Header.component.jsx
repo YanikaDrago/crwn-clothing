@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
 
 import { auth } from '../../firebase/firebase.utils';
+import CartIcon from "../cart-icon/Cart-icon.component";
+import CartDropdown from '../cart-dropdown/Cart-dropdown.component';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 
 import './header.styles.scss';
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
   <div className='header'>
     <Link className='logo-container' to='/'>
       <Logo className='logo' />
@@ -29,12 +31,18 @@ const Header = ({ currentUser }) => (
           SIGN IN
         </Link>
       )}
+      <CartIcon />
     </div>
+    {
+      hidden ? null : <CartDropdown />
+    }
   </div>
 );
 
-const mapStateToProps = (state) => ({  //извлечение данных из store / можно назвать функцию по-другому, но обычно все называют так
-  currentUser: state.user.currentUser
+//извлечение данных из store / можно назвать функцию по-другому, но обычно все называют так
+const mapStateToProps = ({user: {currentUser}, cart: {hidden}}) => ({  //деструктуризированы из state, получаем их значения
+  currentUser,       // всмето - currentUser: state.user.currentUser
+  hidden
 })
 
 export default connect(mapStateToProps)(Header);
