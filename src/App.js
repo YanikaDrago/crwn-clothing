@@ -23,17 +23,17 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const {setCurrentUser} = this.props;
+    const { setCurrentUser } = this.props;
 
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth) {
+      if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
-      
-        userRef.onSnapshot(sanpShot =>{         
-          setCurrentUser ({
-            id: sanpShot.id,
-            ...sanpShot.data()
-          })
+
+        userRef.onSnapshot(snapShot => {
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data()
+          });
         });
         // console.log(this.state); - в этом месте так нельзя писать из-за this.setState - синхронное значение, нужно делать второй параметр (через аноним функцию)
       }
@@ -54,10 +54,10 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/checkout' component={CheckoutPage} />
-          <Route 
+          <Route
             exact
-            path='/signin' 
-            render={()=>
+            path='/signin'
+            render={() =>
               this.props.currentUser ? (
                 <Redirect to='/' />
               ) : (
@@ -71,7 +71,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = createStructuredSelector ({
+const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 });
 
