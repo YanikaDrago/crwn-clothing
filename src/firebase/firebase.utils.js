@@ -37,8 +37,42 @@ const config = {
     }
 
     return userRef;
-  }
+  };
   // настраиваем сохранение в базу данных firestore
+
+  export const addCollectionAndDocuments = async (
+    collectionKey, 
+    objectsToAdd
+    ) => {
+    const collectionRef = firestore.collection(collectionKey);
+
+    const batch = firestore.batch(); //пакетный объект (объеденяет/группирует все в один большой запрос)
+    objectsToAdd.forEach(obj => {
+      const newDocRef = collectionRef.doc() // сгенерирует id
+      batch.set(newDocRef, obj);
+    })
+
+    return await batch.commit(); // вернет promise
+  };
+
+  export const convertCollectionsSnapshotToMap = (collections) => {
+    const transformedCollection = collections.docs.map( doc => {
+      const { title, items } = doc.data();
+  
+      return {
+        routeName: encodeURI(title.toLowerCase()),
+        id: doc.id,
+        title,
+        items,
+      };
+    });
+
+  //вернет объект "название коллекции" = {объект коллекции} - 5    
+    return transformedCollection.reduce((accumulator, collection) => {
+      accumulator[collection.title.toLowerCase()] = collection;
+      return accumulator
+    }, {});
+  }
 
   firebase.initializeApp(config);
 

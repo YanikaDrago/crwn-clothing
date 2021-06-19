@@ -17,7 +17,6 @@ import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import {setCurrentUser} from './redux/user/user.actions';
 import {selectCurrentUser} from './redux/user/user.selectors';
 
-
 class App extends React.Component {
 
   unsubscribeFromAuth = null;
@@ -39,6 +38,12 @@ class App extends React.Component {
       }
 
       setCurrentUser(userAuth);
+
+      // Добавили в firebase shop.data - часть кода удалили, т.к единоразово делается. См урок в разделе 16
+      // addCollectionAndDocuments(
+      //   'collections', 
+      //   collectionArray.map(({title, items}) => ({title, items}))
+      // )
     });
   }
 
