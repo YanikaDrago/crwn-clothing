@@ -12,40 +12,13 @@ import CheckoutPage from './pages/checkout/Checkout.component';
 
 import Header from './components/header/Header.component';
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+// import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
-import {setCurrentUser} from './redux/user/user.actions';
 import {selectCurrentUser} from './redux/user/user.selectors';
 
 class App extends React.Component {
 
   unsubscribeFromAuth = null;
-
-  componentDidMount() {
-    const { setCurrentUser } = this.props;
-
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-
-        userRef.onSnapshot(snapShot => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-        });
-        // console.log(this.state); - в этом месте так нельзя писать из-за this.setState - синхронное значение, нужно делать второй параметр (через аноним функцию)
-      }
-
-      setCurrentUser(userAuth);
-
-      // Добавили в firebase shop.data - часть кода удалили, т.к единоразово делается. См урок в разделе 16
-      // addCollectionAndDocuments(
-      //   'collections', 
-      //   collectionArray.map(({title, items}) => ({title, items}))
-      // )
-    });
-  }
 
   componentWillUnmount() {
     this.unsubscribeFromAuth();
@@ -80,8 +53,40 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 });
 
-const mapDispatchToProps = dispatch => ({  // отправка действий в store, изменение state
-  setCurrentUser: user => dispatch(setCurrentUser(user))
-})
+export default connect(mapStateToProps)(App);
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+   // 2 Переносим этот код из componentDidMount в sagas.js - переписываем асинхронный код
+
+     
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   if (userAuth) {
+    //     const userRef = await createUserProfileDocument(userAuth);
+
+    //     userRef.onSnapshot(snapShot => {
+    //       setCurrentUser({
+    //         id: snapShot.id,
+    //         ...snapShot.data()
+    //       });
+    //     });
+    //     // console.log(this.state); - в этом месте так нельзя писать из-за this.setState - синхронное значение, нужно делать второй параметр (через аноним функцию)
+    //   }
+
+    //   setCurrentUser(userAuth);
+
+
+      // (1 апгрейд в компоненте) Добавили в firebase shop.data - эту часть кода удалили, т.к единоразово делается. См урок в разделе 16
+      //                                        |
+      //                                        v
+      // addCollectionAndDocuments(
+      //   'collections', 
+      //   collectionArray.map(({title, items}) => ({title, items}))
+      // )
+    // });
+
+
+
+
+    // const mapDispatchToProps = dispatch => ({  // отправка действий в store, изменение state
+//   setCurrentUser: user => dispatch(setCurrentUser(user))
+// })
