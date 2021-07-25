@@ -11,19 +11,22 @@ import {
     ItemCountContainer
 } from './cart-icon.styles';
 
-const CartIcon = ({toggleCartHidden, itemCount}) => (
+const CartIcon = ({ toggleCartHidden, itemCount }) => (
     <CartContainer onClick={toggleCartHidden}>
-        <ShoppingIcon />
-        <ItemCountContainer> {itemCount} </ItemCountContainer>
+      <ShoppingIcon />
+      <ItemCountContainer>{itemCount}</ItemCountContainer>
     </CartContainer>
-)
-
-const mapDispatchToProps = dispatch => ({
+  );
+  
+  const mapDispatchToProps = dispatch => ({
     toggleCartHidden: () => dispatch(toggleCartHidden())
-});
+  });
 
-const mapStateToProps = createStructuredSelector ({  // вместо state =>
+  const mapStateToProps = createStructuredSelector({  // вместо state =>
     itemCount: selectCartItemsCount
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CartIcon);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CartIcon);
