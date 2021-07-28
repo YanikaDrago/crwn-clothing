@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
 import FormInput from '../form-input/Form-input.component';
@@ -13,21 +13,13 @@ import {
   ButtonsBarContainer
 } from './sign-in.styles';
 
-class SignIn extends React.Component {
-  constructor(props) {
-    super(props);
+const SignIn = ({emailSignInStart, googleSignInStart}) => {
+  const [userCredentials, setCredentials] = useState({email: '', password: ''});
 
-    this.state = {
-      email: '',
-      password: ''
-    };
-  }
+  const { email, password } = userCredentials;
 
-  handleSubmit = async event => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    const {emailSignInStart} = this.props;
-    const { email, password } = this.state;
-
     emailSignInStart(email, password);
 
     //   больше не нужен this.state, все будет через Redux и Saga
@@ -39,50 +31,48 @@ class SignIn extends React.Component {
     //   }
   };
 
-  handleChange = event => {
+  const handleChange = event => {
     const { value, name } = event.target;
 
-    this.setState({ [name]: value });
+    setCredentials({ ...userCredentials, [name]: value });
   };
+    
+  return (
+    <SignInContainer>
+      <SignInTitle>I already have an account</SignInTitle>
+      <span>Sign in with your email and password</span>
 
-  render() {
-    const {googleSignInStart} = this.props;
-    return (
-      <SignInContainer>
-        <SignInTitle>I already have an account</SignInTitle>
-        <span>Sign in with your email and password</span>
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          name='email'
+          type='email'
+          handleChange={handleChange}
+          value={email}
+          label='email'
+          required
+        />
+        <FormInput
+          name='password'
+          type='password'
+          value={password}
+          handleChange={handleChange}
+          label='password'
+          required
+        />
+        <ButtonsBarContainer>
+          <CustomButton type='submit'> Sign in </CustomButton>
+          <CustomButton 
+            type='button' 
+            onClick={googleSignInStart} 
+            isGoogleSignIn
+          >  {/* onClick был равен signInWithGoogle*/}
+            Sign in with Google
+          </CustomButton>
+        </ButtonsBarContainer>
+      </form>
+    </SignInContainer>
+  );
 
-        <form onSubmit={this.handleSubmit}>
-          <FormInput
-            name='email'
-            type='email'
-            handleChange={this.handleChange}
-            value={this.state.email}
-            label='email'
-            required
-          />
-          <FormInput
-            name='password'
-            type='password'
-            value={this.state.password}
-            handleChange={this.handleChange}
-            label='password'
-            required
-          />
-          <ButtonsBarContainer>
-            <CustomButton type='submit'> Sign in </CustomButton>
-            <CustomButton 
-              type='button' 
-              onClick={googleSignInStart} 
-              isGoogleSignIn
-            >  {/* onClick был равен signInWithGoogle*/}
-              Sign in with Google
-            </CustomButton>
-          </ButtonsBarContainer>
-        </form>
-      </SignInContainer>
-    );
-  }
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -92,3 +82,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(null, mapDispatchToProps)(SignIn);
+
+
+// меняем классовый компонент на функциональный - хуки
+// constructor(props) {
+//   super(props);
+
+//   this.state = {
+//     email: '',
+//     password: ''
+//   };
+// }
