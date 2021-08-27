@@ -30,8 +30,8 @@ if (process.env.NODE_ENV === "production") {
     console.log("Server is running on port " + port);
   });
 
-  app.get('/service-worker.js', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'build', 'service-worker.js'))
+  app.get('/serviceWorkerRegistration.js', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'serviceWorkerRegistration'))
   })
   
   app.post("/payment", (req, res) => {
