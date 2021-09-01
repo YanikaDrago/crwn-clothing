@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === "production") {
   });
 
   app.get('/serviceWorkerRegistration.js', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'build', 'serviceWorkerRegistration'))
+    res.sendFile(path.resolve(__dirname, '..', 'build', 'serviceWorkerRegistration.js'))
   })
   
   app.post("/payment", (req, res) => {
